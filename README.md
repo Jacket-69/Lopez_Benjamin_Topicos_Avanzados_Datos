@@ -25,3 +25,18 @@ YMMMUP^
  ^^
 
 ```
+
+*Trucazos*
+
+Paso 1:
+    docker-compose up --build
+Paso 2:
+    docker-compose exec oracle-db bash
+Paso 3:
+    sqlplus curso_topicos/curso2025@//localhost:1521/XEPDB1
+Paso 4:
+    Profit 🤑
+
+Comandos Útiles:
+
+@/tmp/sesion*.sql
