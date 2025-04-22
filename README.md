@@ -24,8 +24,6 @@
 YMMMUP^
  ^^
 
-```
-
 *Trucazos*
 
 Paso 1:
@@ -40,3 +38,6 @@ Paso 4:
 Comandos Útiles:
 
 @/tmp/sesion*.sql
+
+```
+
