@@ -107,3 +107,48 @@ END;
 -- Verificar los cambios
 SELECT * FROM Pedidos
 
+----------- EJERCICIO 2
+CREATE OR REPLACE TRIGGER validar_cantidad_detalle
+BEFORE INSERT OR UPDATE ON DetallesPedidos -- se ejecuta antes de insertar o actualizar
+FOR EACH ROW -- se ejecuta para cada fila afectada
+DECLARE
+    -- no use ninguna variable jaja
+BEGIN
+    -- :NEW es el nuevo valor de la columna que se está insertando o actualizando
+    IF :NEW.Cantidad <= 0 THEN
+        -- Si la cantidad no es mayor que 0, lanzar un error.
+        RAISE_APPLICATION_ERROR(-20021, 'La cantidad del detalle del pedido debe ser mayor que 0. Valor proporcionado: ' || :NEW.Cantidad);
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20022, 'Error inesperado en el trigger validar_cantidad_detalle: ' || SQLERRM);
+END validar_cantidad_detalle;
+/
+
+--- Ejemplo 1
+-- Intento de INSERT con cantidad INVÁLIDA
+BEGIN
+    INSERT INTO DetallesPedidos (DetalleID, PedidoID, ProductoID, Cantidad)
+    VALUES (1, 101, 1, -5);
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error al insertar ' || SQLERRM);
+END;
+/
+--- Ejemplo 2 
+-- Intento de INSERT con cantidad VÁLIDA
+BEGIN
+    INSERT INTO DetallesPedidos (DetalleID, PedidoID, ProductoID, Cantidad)
+    VALUES (3, 101, 2, 10);
+    DBMS_OUTPUT.PUT_LINE('Detalle con ID 3 insertado correctamente.');
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Error al insertar cantidad 10: ' || SQLERRM);
+        ROLLBACK;
+END;
+/
+
+-- Verificar
+SELECT * FROM DetallesPedidos
+
