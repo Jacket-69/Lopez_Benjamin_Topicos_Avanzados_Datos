@@ -40,8 +40,6 @@ YMMMUP^
     docker-compose exec oracle-db bash /opt/oracle/scripts/cargar_datos.sh
 7. Acceder al contenedor de Oracle
    docker-compose exec oracle-db bash
-3. Iniciar sesión en SQL*Plus
-    sqlplus curso_topicos/curso2025@//localhost:1521/XEPDB1
 
 Comandos Útiles:
 
