@@ -1,0 +1,14 @@
+# Dockerfile.python
+# Imagen para el generador de datos y cargador (si SQL*Loader se ejecuta aquí)
+
+FROM python:3.9-slim
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+# Copiar archivo de requerimientos e instalar dependencias de Python
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar el resto de la aplicación (el script generador, etc.)
+COPY . .

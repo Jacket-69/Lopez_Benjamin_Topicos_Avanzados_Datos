@@ -1,0 +1,18 @@
+# .gitignore
+
+# Ignorar archivos CSV generados
+datos_csv_generados/
+*.csv
+
+# Otros archivos que podrías querer ignorar
+*.pyc
+__pycache__/
+*.log
+*.bad
+*.dsc
+*.swp
+
+# Archivos específicos de tu IDE o sistema operativo
+.vscode/
+.idea/
+*.DS_Store

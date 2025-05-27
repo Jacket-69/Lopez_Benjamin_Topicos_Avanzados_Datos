@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  oracle-db:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: oracle_db_course
+    ports:
+      - "1521:1521"
+    environment:
+      - ORACLE_PWD=oracle
+      - ORACLE_SID=XE
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "sh", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s sys/oracle@//localhost:1521/XE as sysdba"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  data-inserter:
+    build:
+      context: .
+      dockerfile: Dockerfile.python
+    volumes:
+      - .:/app  # Así editas insertador.py desde tu PC
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    entrypoint: tail -f /dev/null  # No ejecuta automáticamente tu script faker
+
+volumes:
+  oracle-data:
+    name: oracle_data_course
