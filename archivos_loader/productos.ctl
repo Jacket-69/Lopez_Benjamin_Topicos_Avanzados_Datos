@@ -15,4 +15,3 @@ TRAILING NULLCOLS
     Nombre            CHAR,
     Precio            DECIMAL EXTERNAL -- Usar DECIMAL EXTERNAL para números con decimales
 )
-```sql

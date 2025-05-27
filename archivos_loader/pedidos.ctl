@@ -16,4 +16,3 @@ TRAILING NULLCOLS
     FechaPedido       DATE "YYYY-MM-DD HH24:MI:SS", -- Formato de fecha y hora
     Total             DECIMAL EXTERNAL
 )
-```sql

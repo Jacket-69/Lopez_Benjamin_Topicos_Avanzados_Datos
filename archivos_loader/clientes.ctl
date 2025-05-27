@@ -11,9 +11,8 @@ INTO TABLE curso_topicos.Clientes -- Usuario.Tabla destino
 FIELDS TERMINATED BY "," OPTIONALLY ENCLOSED BY '"' -- Campos delimitados por coma, opcionalmente encerrados en comillas
 TRAILING NULLCOLS -- Permitir columnas nulas al final de la línea
 (
-    ClienteID         INTEGER EXTERNAL,
-    Nombre            CHAR,
-    Ciudad            CHAR,
-    FechaNacimiento   DATE "YYYY-MM-DD"
+    ClienteID       INTEGER EXTERNAL,
+    Nombre          CHAR,
+    Ciudad          CHAR,
+    FechaNacimiento DATE "YYYY-MM-DD"
 )
-```sql

@@ -1,5 +1,10 @@
+#!/bin/bash
 # cargar_datos.sh
-    # Script para cargar datos en las tablas de Oracle usando SQL*Loader.
+# Script para cargar datos en las tablas de Oracle usando SQL*Loader.
+
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+cd "${SCRIPT_DIR}"
+echo "Directorio de trabajo actual cambiado a: $(pwd)"
 
     # Configuración de la conexión a la base de datos
     DB_USER="curso_topicos"

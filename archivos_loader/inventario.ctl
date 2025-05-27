@@ -14,4 +14,3 @@ TRAILING NULLCOLS
     ProductoID         INTEGER EXTERNAL,
     CantidadProductos  INTEGER EXTERNAL
 )
-```sql

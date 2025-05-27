@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.8' # Puedes quitar esta línea si Docker Compose te da una advertencia sobre "version" obsoleta
 
 services:
   oracle-db:
@@ -9,29 +9,36 @@ services:
     ports:
       - "1521:1521"
     environment:
-      - ORACLE_PWD=oracle
-      - ORACLE_SID=XE
+      - ORACLE_PWD=oracle # Contraseña para SYS, SYSTEM, PDBADMIN
+      - ORACLE_SID=XE     # SID de la CDB
     volumes:
-      - oracle-data:/opt/oracle/oradata
+      - oracle-data:/opt/oracle/oradata # Persistencia de los datos de la BD
+      # Monta el script de carga en una ubicación dentro del contenedor
+      - ./cargar_datos.sh:/opt/oracle/scripts/cargar_datos.sh:ro
+      # Monta el directorio con los archivos .ctl
+      - ./archivos_loader:/opt/oracle/scripts/archivos_loader 
+      # Monta el directorio con los archivos .csv 
+      - ./datos_csv_generados:/opt/oracle/scripts/datos_csv_generados:ro
     healthcheck:
-      test: ["CMD", "sh", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s sys/oracle@//localhost:1521/XE as sysdba"]
+      test: ["CMD", "sh", "-c", "echo 'SELECT 1 FROM DUAL;' | sqlplus -s sys/oracle@//localhost:1521/XEPDB1 as sysdba"] # Conectar a la PDB
       interval: 30s
       timeout: 10s
       retries: 5
+      ##working_dir: /opt/oracle/scripts 
 
   data-inserter:
     build:
       context: .
       dockerfile: Dockerfile.python
     volumes:
-      - .:/app  # Así editas insertador.py desde tu PC
+      - .:/app
     depends_on:
       oracle-db:
         condition: service_healthy
     stdin_open: true
     tty: true
     working_dir: /app
-    entrypoint: tail -f /dev/null  # No ejecuta automáticamente tu script faker
+    entrypoint: tail -f /dev/null
 
 volumes:
   oracle-data:
