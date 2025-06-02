@@ -110,7 +110,7 @@ for prod_id, _, _ in productos_data_temp:
 
 with open(os.path.join(output_dir, 'inventario.csv'), 'w', newline='', encoding='utf-8') as f:
     writer = csv.writer(f)
-    writer.writerow(['ProductoID', 'CantidadProductos']) # Coincide con sesion1.sql del profesor
+    writer.writerow(['ProductoID', 'CantidadProductos'])
     writer.writerows(inventario_data)
 print(f"inventario.csv generado en {output_dir}.")
 
