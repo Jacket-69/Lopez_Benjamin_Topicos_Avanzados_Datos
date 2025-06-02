@@ -18,7 +18,7 @@ STOCK_MAX_PRODUCTO = 500
 output_dir = "datos_csv_generados"
 os.makedirs(output_dir, exist_ok=True)
 
-fake = Faker('es_ES')
+fake = Faker('es_CL')
 
 ciudades_chilenas = [
     "Santiago", "Valparaíso", "Concepción", "La Serena", "Antofagasta", "Temuco", "Rancagua",
