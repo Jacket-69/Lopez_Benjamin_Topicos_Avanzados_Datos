@@ -121,4 +121,53 @@ GROUP BY c.Nombre;
 
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
----------EJERCICIO 1
+---------EJERCICIO 2
+
+SELECT p.Nombre, SUM(dp.Cantidad * p.Precio) AS TotalVentas
+FROM Productos p, DetallesPedidos dp
+WHERE p.ProductoID = dp.ProductoID
+GROUP BY p.Nombre;
+
+--ANALISIS
+
+/*
+Si dp.ProductoID no tiene indice se escanea la tabla completa :P
+Tambien hay que arreglar la consulta para usar JOIN hehe
+*/
+
+-- 1. EXPLAIN PLAN
+
+EXPLAIN PLAN FOR
+SELECT p.Nombre, SUM(dp.Cantidad * p.Precio) AS TotalVentas
+FROM Productos p, DetallesPedidos dp
+WHERE p.ProductoID = dp.ProductoID
+GROUP BY p.Nombre;
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+-- 2. crear indice
+
+CREATE INDEX idx_detalles_prodid ON DetallesPedidos(ProductoID);
+
+-- 3. consulta usando JOIN
+
+SELECT p.Nombre, SUM(dp.Cantidad * dp.PrecioUnitario) AS TotalVentas
+FROM   Productos p
+       JOIN DetallesPedidos dp ON p.ProductoID = dp.ProductoID
+GROUP BY p.Nombre;
+
+-- 4. actualizar y probar
+
+BEGIN
+  DBMS_STATS.GATHER_TABLE_STATS(USER, 'DetallesPedidos');
+  DBMS_STATS.GATHER_TABLE_STATS(USER, 'Productos');
+END;
+/
+
+EXPLAIN PLAN FOR
+SELECT p.Nombre, SUM(dp.Cantidad * dp.PrecioUnitario) AS TotalVentas
+FROM   Productos p
+       JOIN DetallesPedidos dp ON p.ProductoID = dp.ProductoID
+GROUP BY p.Nombre;
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
