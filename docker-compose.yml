@@ -1,5 +1,3 @@
-version: '3.8' # Puedes quitar esta línea si Docker Compose te da una advertencia sobre "version" obsoleta
-
 services:
   oracle-db:
     build:

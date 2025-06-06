@@ -48,8 +48,8 @@ echo "Directorio de trabajo actual cambiado a: $(pwd)"
                log="${log_file_path}" \
                bad="${bad_file_path}" \
                rows=50000 \
-               bindsize=10485760 \
-               readsize=10485760 \
+               bindsize=33554432 \
+               readsize=33554432 \
                parallel=false # Usar true si la BD y la carga lo permiten y es una tabla muy grande, pero puede complicar logs.
 
         local exit_code=$?
