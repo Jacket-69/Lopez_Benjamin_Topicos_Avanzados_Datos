@@ -1,0 +1,91 @@
+* MODELO DE DATOS NoSQL (MONGODB) PARA EL ESQUEMA curso_topicos
+*
+* Colección Principal: 'clientes'
+* ---------------------------------
+* En lugar de normalizar los datos en múltiples tablas como en SQL (Clientes, Pedidos, DetallesPedidos),
+* se utilizará una única colección llamada 'clientes'. La estrategia principal es EMBEBER (embedding) los datos relacionados
+* dentro de un único documento para optimizar las lecturas.
+*
+* Estrategia de Embebido:
+* 1.  Embeber Pedidos: El array 'Pedidos' se incluirá directamente dentro de cada documento de cliente.
+* Razón: El acceso más común será consultar un cliente y ver todos sus pedidos. Embeberlos evita
+* la necesidad de realizar 'JOINs', lo que mejora significativamente el rendimiento de la consulta.
+*
+* 2.  Embeber Detalles de Pedidos: Dentro de cada pedido en el array, se embeberá un array 'Detalles'
+* que contiene los productos de ese pedido.
+* Razón: Al igual que con los pedidos, los detalles son parte integral de un pedido y casi siempre se
+* consultan juntos.
+*
+* 3.  Embeber Datos de Productos: En lugar de solo referenciar un 'ProductoID', se duplicarán los datos
+* relevantes del producto (como Nombre y Precio) directamente en el detalle del pedido.
+* Razón: Esto elimina por completo la necesidad de consultar una colección separada de 'productos',
+* haciendo que la lectura del historial de un cliente sea una operación de una sola consulta.
+*
+* Ventaja General:
+* Este modelo está optimizado para patrones de acceso donde la entidad principal es el cliente. Se recupera toda
+* la información relevante de un cliente y sus pedidos en una sola operación de lectura, lo cual es muy eficiente.
+
+{
+  "ClienteID": 1,
+  "Nombre": "Benjamin Lopez",
+  "Ciudad": "Calama",
+  "FechaNacimiento": "2002-09-17T00:00:00Z",
+  "Pedidos": [
+    {
+      "PedidoID": 1001,
+      "Total": 1291.00,
+      "FechaPedido": "2025-07-08T17:15:00Z",
+      "Detalles": [
+        {
+          "ProductoID": 101,
+          "Nombre": "Laptop Gamer",
+          "Precio": 1200.00,
+          "Cantidad": 1
+        },
+        {
+          "ProductoID": 102,
+          "Nombre": "Mouse Inalámbrico",
+          "Precio": 45.50,
+          "Cantidad": 2
+        }
+      ]
+    },
+    {
+      "PedidoID": 1005,
+      "Total": 89.99,
+      "FechaPedido": "2025-07-09T10:30:00Z",
+      "Detalles": [
+        {
+          "ProductoID": 103,
+          "Nombre": "Teclado Mecánico",
+          "Precio": 89.99,
+          "Cantidad": 1
+        }
+      ]
+    }
+  ]
+}
+
+
+**********************
+// a. Obtener Clientes por Ciudad
+
+// Consulta para obtener los clientes de la ciudad de Santiago
+db.clientes.find(
+    { "Ciudad": "Santiago" },
+    { "Nombre": 1, "Ciudad": 1, "_id": 0 }
+);
+
+// b. Calcular Productos Vendidos
+
+// Consulta para calcular el número total de productos vendidos, agrupados por producto
+db.clientes.aggregate([
+    { $unwind: "$Pedidos" },
+    { $unwind: "$Pedidos.Detalles" },
+    {
+        $group: {
+            _id: "$Pedidos.Detalles.Nombre",
+            TotalVendidos: { $sum: "$Pedidos.Detalles.Cantidad" }
+        }
+    }
+]);
